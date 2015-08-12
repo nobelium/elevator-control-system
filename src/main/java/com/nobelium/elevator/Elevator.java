@@ -15,7 +15,7 @@ public class Elevator {
 
 	private final int id;
 	private int curFloor, destFloor;
-	private PriorityQueue destinations;
+	private PriorityQueue<Integer> destinations;
 	private boolean elevatorGoingUp, reqGoingUp, idle;
 	
 	public Elevator(Integer id) {
@@ -25,6 +25,7 @@ public class Elevator {
 		this.idle = true;
 		this.elevatorGoingUp = true;
 		this.reqGoingUp = true;
+		this.destinations = new PriorityQueue<>();
 	}
 	
 	public int getCurFloor() {
@@ -66,7 +67,16 @@ public class Elevator {
 	}
 	
 	public void addPickupReq(PickupRequest req) {
-		
+		if(curFloor == req.getFloor()){
+			if(destinations.isEmpty()) idle = true;
+			return;
+		}
+		idle = false;
+		reqGoingUp = req.isGoingUp();
+		elevatorGoingUp = (curFloor > req.getFloor()) ? false : true;
+		destinations = (curFloor > req.getFloor()) ? new PriorityQueue<>(new MaxHeapComparator()) : new PriorityQueue<>();
+		destinations.add(req.getFloor());
+		destFloor = destinations.peek();
 	}
 
 	// User sets dest after entering
