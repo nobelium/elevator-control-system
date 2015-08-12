@@ -25,3 +25,10 @@ Criteria for piggybacking:
 -------------------------
 The image below shows the algorithm and the type of priority queue used for each case. The First column in the image shows the direction in which the elevator is moving and the second column shows the direction of the request it is going to serve. The third column gives the criteria for piggybacking if a new pickup request is issued.
 <img src="/img/piggyback.jpg?raw=true" alt="Drawing" style="width: 200px;"/>
+
+Caveats and areas of improvements:
+----------------------------------
+- Does not smoothly handle the case where the user request for an elevator in one direction and enters a floor number which is in another direction
+- Does not consider waiting time, velocity and blocked status for elevator
+- Does not consider maximum capacity of elevator
+- Does not consider number of piggyback riders/number of piggyback stops
