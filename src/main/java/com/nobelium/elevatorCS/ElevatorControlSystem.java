@@ -83,7 +83,6 @@ public class ElevatorControlSystem implements ControlSystem {
 		}
 	}
 
-	// Finds the closest Piggyback-able elevator
 	private Elevator findPiggybackElevator(PickupRequest pickupReq) {
 		Elevator result = null;
 		Integer closest = Integer.MAX_VALUE;
@@ -105,6 +104,41 @@ public class ElevatorControlSystem implements ControlSystem {
 		for(Elevator elevator: elevators) {
 			elevator.move();
 		}
+
+		List<Integer> processed = new ArrayList<>(); 
+		// Process FIFO queue
+		for(int i=0;i<requests.size();i++) {
+			PickupRequest req = requests.get(i);
+			Elevator closestElevator = findIdleElevator(req.getFloor());
+			if(closestElevator != null){
+				closestElevator.addPickupReq(req);
+				processed.add(i);
+			} else {
+				closestElevator = findPiggybackElevator(req);
+				if(closestElevator != null){
+					closestElevator.addDestFloor(req.getFloor());
+					processed.add(i);
+				}
+			}
+		}
+		
+		// Remove all processed requests
+		for(Integer index: processed) {
+			requests.remove(index);
+		}
+	}
+
+	private Elevator findIdleElevator(int destFloor) {
+		int closestDist = Integer.MAX_VALUE;
+		Elevator closestElevator = null;
+		for(Elevator elevator: elevators){
+			if(elevator.isIdle()){
+				if(elevator.getDistToFloor(destFloor) < closestDist){
+					closestElevator = elevator;
+				}
+			}
+		}
+		return closestElevator;
 	}
 
 }

@@ -3,6 +3,8 @@ package main.java.com.nobelium.elevator;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 
+import main.java.com.nobelium.elevatorCS.PickupRequest;
+
 class MaxHeapComparator implements Comparator<Integer> {
 	public int compare(Integer x, Integer y){
         return y - x;
@@ -63,7 +65,7 @@ public class Elevator {
 		reqGoingUp = elevatorGoingUp;
 	}
 	
-	public void addPickupReq() {
+	public void addPickupReq(PickupRequest req) {
 		
 	}
 
