@@ -19,12 +19,16 @@ Assumptions made:
 Scheduling Algorithm:
 ---------------------
 The scheduling Algorithm uses a two stage approach. This algorithm improves over the naive First-In-First-Out (FIFO) by adding a Piggyback stage. Each pickup request is checked if its possible to piggyback before its added to FIFO request queue.
+
 <img src="/img/blockdiagram.jpg?raw=true" alt="Drawing" style="width: 200px;"/>
+
 
 Criteria for piggybacking: 
 -------------------------
 The image below shows the algorithm and the type of priority queue used for each case. The First column in the image shows the direction in which the elevator is moving and the second column shows the direction of the request it is going to serve. The third column gives the criteria for piggybacking if a new pickup request is issued.
+
 <img src="/img/piggyback.jpg?raw=true" alt="Drawing" style="width: 200px;"/>
+
 
 Caveats and areas of improvements:
 ----------------------------------
