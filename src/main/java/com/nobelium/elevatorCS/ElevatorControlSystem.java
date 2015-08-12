@@ -66,6 +66,7 @@ public class ElevatorControlSystem implements ControlSystem {
 		for(Elevator elevator: elevators) {
 			if(elevator.getId() == id) {
 				elevator.addDestFloor(destFloor);
+				System.out.println("Setting dest elevatorId: " + id +" floor: " + destFloor );
 			}
 		}
 	}
@@ -77,9 +78,10 @@ public class ElevatorControlSystem implements ControlSystem {
 		Elevator elevator = findPiggybackElevator(pickupReq);
 		if(elevator != null){
 			elevator.addDestFloor(pickupReq.getFloor());
+			System.out.print("\nPiggyback possible for floor: " + pickupReq.getFloor() + " isGoingup: " + pickupReq.isGoingUp() + " added to elevatorID: " + elevator.getId());
 		} else {
-			// Add to FIFO queue
 			requests.add(pickupReq);
+			System.out.print("\nAdding to FIFO queue. Piggyback NOT possible for floor: " + pickupReq.getFloor() + " isGoingup: " + pickupReq.isGoingUp());
 		}
 	}
 
@@ -112,19 +114,21 @@ public class ElevatorControlSystem implements ControlSystem {
 			Elevator closestElevator = findIdleElevator(req.getFloor());
 			if(closestElevator != null){
 				closestElevator.addPickupReq(req);
+				System.out.print("\nFIFO req: " + req.getFloor() + " isGoingup: " + req.isGoingUp() + " assigned to elevatorID: " + closestElevator.getId());
 				processed.add(i);
 			} else {
 				closestElevator = findPiggybackElevator(req);
 				if(closestElevator != null){
 					closestElevator.addDestFloor(req.getFloor());
+					System.out.print("\nPiggyback possible for floor: " + req.getFloor() + " isGoingup: " + req.isGoingUp() + " added to elevatorID: " + closestElevator.getId());
 					processed.add(i);
 				}
 			}
 		}
 		
 		// Remove all processed requests
-		for(Integer index: processed) {
-			requests.remove(index);
+		for(int i=processed.size()-1;i>=0;i--) {
+			requests.remove(i);
 		}
 	}
 

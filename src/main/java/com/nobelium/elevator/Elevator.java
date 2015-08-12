@@ -74,7 +74,7 @@ public class Elevator {
 		idle = false;
 		reqGoingUp = req.isGoingUp();
 		elevatorGoingUp = (curFloor > req.getFloor()) ? false : true;
-		destinations = (curFloor > req.getFloor()) ? new PriorityQueue<>(new MaxHeapComparator()) : new PriorityQueue<>();
+		destinations = !(reqGoingUp) ? new PriorityQueue<>(new MaxHeapComparator()) : new PriorityQueue<>();
 		destinations.add(req.getFloor());
 		destFloor = destinations.peek();
 	}
@@ -82,8 +82,26 @@ public class Elevator {
 	// User sets dest after entering
 	// Piggyback requests
 	public void addDestFloor(int floor) {
-		// TODO Auto-generated method stub
-		
+		if(curFloor == floor){
+			return;
+		}
+		if((isReqGoingUp() && floor < curFloor) || (!isReqGoingUp() && floor > curFloor)) {
+			throw new IllegalArgumentException("Lift was summoned to serve a request which was in other direction");
+		}
+		if(isReqGoingUp() != isElevatorGoingUp() && curFloor != destFloor){
+			throw new IllegalArgumentException("Lift hasn't reached the destination");
+		}
+		System.out.println("New destination added for ElevatorId: " + id + " new dest: " + floor + " old dest: " + destFloor);
+		if(!destinations.isEmpty()) {
+			Integer dest = destinations.peek();
+			if(destinations.contains(floor))return;
+		} else {
+			destinations = (curFloor > floor) ? new PriorityQueue<>(new MaxHeapComparator()) : new PriorityQueue<>();
+		}
+		idle = false;
+		destinations.add(floor);
+		destFloor = destinations.peek();
+		elevatorGoingUp = (curFloor > destFloor) ? false : true;
 	}
 	
 	// Tells if a floor in between curFloor and destFloor
@@ -97,8 +115,18 @@ public class Elevator {
 	}
 
 	public void move() {
-		// TODO Auto-generated method stub
-		
+		if(curFloor == destFloor)idle = true;
+		if(curFloor < destFloor) {
+			curFloor = curFloor + 1;
+		} else if(curFloor > destFloor) {
+			curFloor = curFloor - 1; 
+		}
+		if(curFloor == destFloor){
+			// remove top element from heap
+			destinations.poll();
+			if(!destinations.isEmpty()){
+				destFloor = destinations.peek();
+			}
+		}
 	}
-	
 }
